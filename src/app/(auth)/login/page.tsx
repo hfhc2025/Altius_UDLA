@@ -5,13 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
+  Card, CardHeader, CardTitle, CardContent,
 } from '@/components/ui/card'
 
-/* ---------------------------- Componente Form ----------------------------- */
 function LoginForm() {
   const router                = useRouter()
   const searchParams          = useSearchParams()
@@ -20,7 +16,6 @@ function LoginForm() {
   const [error, setError]     = useState('')
   const [loading, setLoading] = useState(false)
 
-  /* --------------------------- Submit al servidor -------------------------- */
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
@@ -35,9 +30,7 @@ function LoginForm() {
       })
 
       if (res.ok) {
-        const dest = searchParams.get('from') || '/dashboard'
-        router.replace(dest)
-        router.refresh()
+        router.replace('/dashboard')
       } else {
         const { error } = await res.json()
         setError(error ?? 'Credenciales inválidas')
@@ -49,34 +42,20 @@ function LoginForm() {
     }
   }
 
-  /* ---------------------- Redirección si ya hay sesión --------------------- */
   useEffect(() => {
     ;(async () => {
       const r = await fetch('/api/auth/me', { credentials: 'include' })
       if (r.ok) {
-        const dest = searchParams.get('from') || '/dashboard'
-        router.replace(dest)
+        router.replace('/dashboard')
       }
     })()
-  }, [router, searchParams])
+  }, [router])
 
-  /* --------------------------------– UI ----------------------------------- */
   return (
     <div className="relative min-h-screen text-white font-sans">
-      {/* ---------- Video de fondo ---------- */}
-      <video
-        className="absolute inset-0 -z-10 w-full h-full object-cover"
-        src="/1.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
-
-      {/* ---------- Overlay degradado ---------- */}
+      <video className="absolute inset-0 -z-10 w-full h-full object-cover" src="/1.mp4" autoPlay loop muted playsInline />
       <div className="absolute inset-0 -z-5 bg-gradient-to-tr from-black/80 via-black/60 to-[#FF6600]/40" />
 
-      {/* ---------- Tarjeta de login ---------- */}
       <div className="flex items-center justify-center min-h-screen p-4">
         <Card className="w-full max-w-md backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-[0_8px_32px_rgba(255,255,255,0.10)] animate-in fade-in duration-500">
           <CardHeader className="space-y-1">
@@ -90,19 +69,14 @@ function LoginForm() {
 
           <CardContent className="space-y-6">
             {error && (
-              <p
-                role="alert"
-                className="bg-red-500/20 border border-red-400/40 text-red-300 px-4 py-3 rounded"
-              >
+              <p role="alert" className="bg-red-500/20 border border-red-400/40 text-red-300 px-4 py-3 rounded">
                 {error}
               </p>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label htmlFor="email" className="block text-sm mb-1">
-                  Email
-                </label>
+                <label htmlFor="email" className="block text-sm mb-1">Email</label>
                 <Input
                   id="email"
                   type="email"
@@ -116,9 +90,7 @@ function LoginForm() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm mb-1">
-                  Contraseña
-                </label>
+                <label htmlFor="password" className="block text-sm mb-1">Contraseña</label>
                 <Input
                   id="password"
                   type="password"
@@ -153,7 +125,6 @@ function LoginForm() {
   )
 }
 
-/* -------------------------- Entry point de página ------------------------- */
 export default function LoginPage() {
   return (
     <Suspense fallback={null}>
